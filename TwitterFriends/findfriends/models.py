@@ -10,10 +10,10 @@ class TwitterUser(models.Model):
     # la base de datos
     user_id = models.IntegerField(primary_key=True)
     # nombre de usuario en twitter (@...). No debe repetirse en la tabla
-    screen_name = models.CharField(unique=True)
+    screen_name = models.CharField(unique=True, max_length=50)
     # flag para saber si es una cuenta verificada
     is_verified = models.BooleanField()
     # localización del usuario
-    location = models.CharField()
+    location = models.CharField(max_length=50)
     # lista de amigos del usuario
     friends = models.ForeignKey('self', on_delete=models.CASCADE)
