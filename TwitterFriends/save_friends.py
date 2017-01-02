@@ -1,19 +1,22 @@
 # script python para guardar en la base de datos los datos de twitter que nos 
 # interesan
 from os import environ
-environ.setdefault("DJANGO_SETTINGS_MODULE", "findfriends.settings")
+environ.setdefault("DJANGO_SETTINGS_MODULE", "TwitterFriends.settings")
+import django
+django.setup()
 import tweepy
 from findfriends.models import TwitterUser
 
 # función para obtener los amigos de un determinado usuario y guardarlos en
 # la base de datos.
 def save_user(user):
+    print("Saving: ",user.screen_name)
     u = TwitterUser()
-    u.user_id = friend.id
-    u.screen_name = friend.screen_name
-    u.is_verified = friend.verified
-    u.location = friend.location
-    u.friends = friend.friends_ids(user_id=friend.id)
+    u.user_id = user.id
+    u.screen_name = user.screen_name
+    u.is_verified = user.verified
+    u.location = user.location
+    u.friends = api.friends_ids(user_id=user.id)
     u.save()
 
 def get_and_save_friends(user_id):
