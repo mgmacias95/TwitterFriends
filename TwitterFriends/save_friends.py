@@ -35,7 +35,8 @@ api = tweepy.API(auth)
 me = api.me()
 save_user(me)
 # guardamos sus amigos y los amigos de sus amigos en la base de datos
-get_and_save_friends(user=me.id)
+get_and_save_friends(user_id=me.id)
 amigos = TwitterUser.objects.filter(pk=me.id).friends
 for amigo in amigos:
     get_and_save_friends(user_id=amigo)
+

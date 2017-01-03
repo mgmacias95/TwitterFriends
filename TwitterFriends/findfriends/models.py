@@ -16,4 +16,4 @@ class TwitterUser(models.Model):
     # localización del usuario
     location = models.CharField(max_length=50)
     # lista de amigos del usuario
-    friends = models.ForeignKey('self', on_delete=models.CASCADE)
+    friends = models.ManyToManyField('self')
