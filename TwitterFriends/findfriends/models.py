@@ -8,7 +8,7 @@ from django.db import models
 class TwitterUser(models.Model):
     # id numérico del usuario en twitter. Nos servirá para identificarlo en
     # la base de datos
-    user_id = models.IntegerField(primary_key=True)
+    user_id = models.IntegerField(unique=True)
     # nombre de usuario en twitter (@...). No debe repetirse en la tabla
     screen_name = models.CharField(unique=True, max_length=50)
     # flag para saber si es una cuenta verificada
