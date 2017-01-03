@@ -17,3 +17,6 @@ class TwitterUser(models.Model):
     location = models.CharField(max_length=50)
     # lista de amigos del usuario
     friends = models.ManyToManyField('self')
+
+    def __str__(self):
+        return self.screen_name
