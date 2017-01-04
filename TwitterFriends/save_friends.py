@@ -19,8 +19,7 @@ def save_user(user):
         u.user_id = user.id
         u.screen_name = user.screen_name
         u.is_verified = user.verified
-        u.location = user.locationg
-        u.friends.clear()
+        u.location = user.location
         u.save()
     else:
         print(user.screen_name, " is already on the data base")
