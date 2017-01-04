@@ -8,7 +8,7 @@ import tweepy
 import time     # to sleep when it exceeds the max number of calls to the api
 from findfriends.models import TwitterUser
 
-n_calls=0 # parameter to control the number of calls to the twitter api
+n_calls = 0 # parameter to control the number of calls to the twitter api
 
 # función para obtener los amigos de un determinado usuario y guardarlos en
 # la base de datos.
@@ -27,12 +27,12 @@ def save_user(user):
 
 
 def get_and_save_friends(user_id):
+    global n_calls
     for friend in tweepy.Cursor(api.friends, user_id=user_id, count=200).items():
-        print("Call number: ", n_calls)
         n_calls += 1
-        if n_calls > 13:
+        if n_calls > 13*199:
             print("About to exceed max number of calls")
-            time.sleep(3600*15) # wait 15 minutes
+            time.sleep(60*15) # wait 15 minutes
             n_calls = 0
         else:
             save_user(friend)
