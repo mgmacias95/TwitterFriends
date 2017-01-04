@@ -17,7 +17,7 @@ class TwitterUser(models.Model):
     location = models.CharField(max_length=50)
     # lista de amigos del usuario. En Twitter, las relaciones no son simétricas
     # por lo que debemos establecer este flag a False.
-    friends = models.ManyToManyField('self', symmetrical=False)
+    friends = models.ManyToManyField('self', symmetrical=False, blank=True)
 
     def __str__(self):
         return self.screen_name

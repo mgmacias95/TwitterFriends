@@ -12,7 +12,6 @@ n_calls = 0 # parameter to control the number of calls to the twitter api
 # function to save frienship on database
 def create_frienship(friends, userid):
     user = TwitterUser.objects.get(user_id=userid)
-    user.friends.clear()
     print("Saving ", user.screen_name, "'s friends")
     for friend in friends:
         if TwitterUser.objects.filter(user_id=friend).exists():
@@ -28,6 +27,7 @@ auth.set_access_token(environ["TWITTER_ACCESS_TOKEN"],
 api = tweepy.API(auth)
 
 me = api.me()
+
 # guardamos los amigos del usuario identificado
 amigos = api.friends_ids(user_id=me.id)
 create_frienship(friends=amigos, userid=me.id)
@@ -39,5 +39,5 @@ for amigo in amigos:
             print("About to exceed max number of calls")
             time.sleep(16*60) # sleep 15+1 minutes
             n_calls = 0
-        
+
         create_frienship(friends=api.friends_ids(user_id=amigo), userid=amigo)

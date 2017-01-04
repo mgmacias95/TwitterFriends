@@ -20,7 +20,7 @@ def save_user(user):
         u.screen_name = user.screen_name
         u.is_verified = user.verified
         u.location = user.location
-        # u.friends = None
+        u.friends.clear()
         u.save()
     else:
         print(user.screen_name, " is already on the data base")
@@ -34,7 +34,7 @@ def get_and_save_friends(user_id):
             print("About to exceed max number of calls")
             time.sleep(60*16) # wait 15+1 minutes
             n_calls = 0
-            
+
         save_user(friend)
 
 # Las claves de acceso a twitter están definidas como variables de entorno
