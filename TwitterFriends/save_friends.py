@@ -30,9 +30,9 @@ def get_and_save_friends(user_id):
     global n_calls
     for friend in tweepy.Cursor(api.friends, user_id=user_id, count=200).items():
         n_calls += 1
-        if n_calls > 13*199:
+        if n_calls > 13*180:
             print("About to exceed max number of calls")
-            time.sleep(60*15) # wait 15 minutes
+            time.sleep(60*16) # wait 15+1 minutes
             n_calls = 0
         else:
             save_user(friend)
