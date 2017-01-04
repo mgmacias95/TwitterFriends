@@ -34,9 +34,8 @@ def get_and_save_friends(user_id):
             print("About to exceed max number of calls")
             time.sleep(60*16) # wait 15+1 minutes
             n_calls = 0
-        else:
-            save_user(friend)
-
+            
+        save_user(friend)
 
 # Las claves de acceso a twitter están definidas como variables de entorno
 auth = tweepy.OAuthHandler(environ["TWITTER_CONSUMER_KEY"], 
@@ -53,4 +52,3 @@ get_and_save_friends(user_id=me.id)
 amigos = api.friends_ids(user_id=me.id)
 for amigo in amigos:
     get_and_save_friends(user_id=amigo)
-
