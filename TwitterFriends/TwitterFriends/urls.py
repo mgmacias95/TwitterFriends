@@ -17,6 +17,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^findfriends/', include('findfriends.urls')),
+    url(r'^', include('findfriends.urls')),
     url(r'^admin/', admin.site.urls),
 ]
