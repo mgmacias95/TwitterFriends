@@ -4,7 +4,6 @@ environ.setdefault("DJANGO_SETTINGS_MODULE", "TwitterFriends.settings")
 import django
 django.setup()
 from findfriends.models import TwitterUser
-from json import dumps
 
 def generate_net_json():
     net = {"nodes":[], "links":[]}
@@ -14,4 +13,4 @@ def generate_net_json():
             net["links"].append({"source": user.screen_name,
                 "target": friend.screen_name, "value":1})
 
-    return dumps(net)
+    return net
