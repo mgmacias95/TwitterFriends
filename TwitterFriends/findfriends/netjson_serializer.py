@@ -5,6 +5,7 @@ import django
 django.setup()
 from findfriends.models import TwitterUser
 
+# function that generates a json to be represented on d3
 def generate_net_json():
     net = {"nodes":[], "links":[]}
     for user in TwitterUser.objects.all():
@@ -14,3 +15,19 @@ def generate_net_json():
                 "target": friend.screen_name, "value":1})
 
     return net
+
+# function that generates a gdf file to work on gephi
+def generate_net_gdf():
+    net = []
+    # start with nodes
+    net.append("nodedef>name VARCHAR,label VARCHAR,verified BOOLEAN,location VARCHAR")
+    for user in TwitterUser.objects.all():
+        net.append('{},{},{},{}'.format(user.user_id, user.screen_name, 
+            user.is_verified, user.location))
+    # then add edges
+    net.append("edgedef>node1 VARCHAR,node2 VARCHAR,directed BOOLEAN")
+    for user in TwitterUser.objects.all():
+        for friend in user.friends.all():
+            net.append('{},{},true'.format(user.user_id, friend.user_id))
+
+    return '\n'.join(net)
