@@ -4,10 +4,7 @@ environ.setdefault("DJANGO_SETTINGS_MODULE", "TwitterFriends.settings")
 import django
 django.setup()
 import tweepy
-import time     # to sleep when it exceeds the max number of calls to the api
 from findfriends.models import TwitterUser
-
-n_calls = 0 # parameter to control the number of calls to the twitter api
 
 # function to save frienship on database
 def create_frienship(friends, userid):
@@ -24,7 +21,8 @@ auth = tweepy.OAuthHandler(environ["TWITTER_CONSUMER_KEY"],
                            environ["TWITTER_CONSUMER_SECRET"])
 auth.set_access_token(environ["TWITTER_ACCESS_TOKEN"], 
                       environ["TWITTER_ACCESS_TOKEN_SECRET"])
-api = tweepy.API(auth)
+api = tweepy.API(auth_handler=auth, wait_on_rate_limit_notify=True, 
+    wait_on_rate_limit=True)
 
 me = api.me()
 
@@ -34,10 +32,4 @@ create_frienship(friends=amigos, userid=me.id)
 # guardamos los amigos de los amigos del usuario identificado
 for amigo in amigos:
     if TwitterUser.objects.filter(user_id=amigo).exists():
-        n_calls += 1
-        if n_calls > 13*180:
-            print("About to exceed max number of calls")
-            time.sleep(16*60) # sleep 15+1 minutes
-            n_calls = 0
-
         create_frienship(friends=api.friends_ids(user_id=amigo), userid=amigo)
