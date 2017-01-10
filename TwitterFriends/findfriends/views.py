@@ -1,6 +1,10 @@
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from .netjson_serializer import generate_net_json
+from .netjson_serializer import *
+
+def netgdf(request):
+    net = generate_net_gdf()
+    return HttpResponse(net, content_type='text/plain')
 
 def netjson(request):
     net = generate_net_json()
