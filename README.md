@@ -38,7 +38,7 @@ Once you've cloned the repository, follow these steps to make your own Twitter f
 5. Once you've saved all users (friends and friends of your friends) it's time to create relationships between the users.
 
   ```
-  python create_friendship.py
+  python create_friendships.py
   ```
 
 6. At this step, we have all data we need. Now let's export the data. Run the server:
