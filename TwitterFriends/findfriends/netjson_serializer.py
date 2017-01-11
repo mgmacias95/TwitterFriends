@@ -34,29 +34,37 @@ def generate_net_gdf(whole_net = False):
     net = []
     # start with nodes
     net.append("nodedef>name VARCHAR,label VARCHAR,verified BOOLEAN,location VARCHAR")
-    u = TwitterUser.objects.first()
-    net.append('{},{},{},\'{}\''.format(u.user_id, u.screen_name, 
-            u.is_verified, u.location))
-
-    for user in u.friends.all():
-        net.append('{},{},{},\'{}\''.format(user.user_id, user.screen_name, 
-            user.is_verified, user.location))
-
-    # then add edges
-    net.append("edgedef>node1 VARCHAR,node2 VARCHAR,directed BOOLEAN")
-    
-    for friend in u.friends.all():
-        net.append('{},{},true'.format(u.user_id, friend.user_id))
-    
     if not whole_net:
+        u = TwitterUser.objects.first()
+        net.append('{},{},{},\'{}\''.format(u.user_id, u.screen_name, 
+                u.is_verified, u.location))
+
+        for user in u.friends.all():
+            net.append('{},{},{},\'{}\''.format(user.user_id, user.screen_name, 
+                user.is_verified, user.location))
+
+        # then add edges
+        net.append("edgedef>node1 VARCHAR,node2 VARCHAR,directed BOOLEAN")
+
+        for friend in u.friends.all():
+            net.append('{},{},true'.format(u.user_id, friend.user_id))
+    
+    
         for user in u.friends.all():
             # we get the friends in common
             common_f = user.friends.filter(friends__in=u.friends.all()).distinct()
             for friend in common_f:
                 net.append('{},{},true'.format(user.user_id, friend.user_id))
     else:
-        for user in u.friends.all():
-            # we take the whole net with all users and links
+        for user in TwitterUser.objects.all():
+            net.append('{},{},{},\'{}\''.format(user.user_id, user.screen_name, 
+                user.is_verified, user.location))
+
+        # then add edges
+        net.append("edgedef>node1 VARCHAR,node2 VARCHAR,directed BOOLEAN")
+
+        for user in TwitterUser.objects.all():
+            # we get the whole net
             for friend in user.friends.all():
                 net.append('{},{},true'.format(user.user_id, friend.user_id))
 
