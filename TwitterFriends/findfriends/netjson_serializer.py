@@ -69,3 +69,50 @@ def generate_net_gdf(whole_net = False):
                 net.append('{},{},true'.format(user.user_id, friend.user_id))
 
     return '\n'.join(net)
+
+# function that generates a gdf file to work on gephi
+def generate_net_gdf(whole_net = False):
+    net = []
+    keys = {}
+    counter = 1
+    # start with nodes
+    if not whole_net:
+        u = TwitterUser.objects.first()
+        net.append("*Vertices "+str(u.friends.count()+1))
+        net.append('{} \"{}\"'.format(counter, u.screen_name))
+        keys[u.screen_name] = counter
+        counter += 1
+
+        for user in u.friends.all():
+            net.append('{} \"{}\"'.format(counter, user.screen_name))
+            keys[user.screen_name] = counter
+            counter += 1
+
+        # then add edges
+        net.append("*Edges")
+
+        for friend in u.friends.all():
+            net.append('{} {}'.format(keys[u.screen_name], keys[friend.screen_name]))
+    
+    
+        for user in u.friends.all():
+            # we get the friends in common
+            common_f = user.friends.filter(friends__in=u.friends.all()).distinct()
+            for friend in common_f:
+                net.append('{} {}'.format(keys[user.screen_name], keys[friend.screen_name]))
+    else:
+        net.append("*Vertices "+str(TwitterUser.objects.count()))
+        for user in TwitterUser.objects.all():
+            net.append('{} \"{}\"'.format(counter, user.screen_name))
+            keys[u.screen_name] = counter
+            counter += 1
+
+        # then add edges
+        net.append("*Edges")
+
+        for user in TwitterUser.objects.all():
+            # we get the whole net
+            for friend in user.friends.all():
+                net.append('{} {}'.format(keys[user.screen_name], keys[friend.screen_name]))
+
+    return '\n'.join(net)

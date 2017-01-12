@@ -8,7 +8,11 @@ def netgdf(request):
 
 def netjson(request):
     net = generate_net_json()
-    return JsonResponse(net)
+    return JsonResponse(net, content_type='text/plain')
+
+def netnet(request):
+    net = generate_net_net()
+    return JsonResponse(net, content_type='text/plain')
 
 
 def index(request):
