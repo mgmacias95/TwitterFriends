@@ -104,7 +104,7 @@ def generate_net_gdf(whole_net = False):
         net.append("*Vertices "+str(TwitterUser.objects.count()))
         for user in TwitterUser.objects.all():
             net.append('{} \"{}\"'.format(counter, user.screen_name))
-            keys[u.screen_name] = counter
+            keys[user.screen_name] = counter
             counter += 1
 
         # then add edges
