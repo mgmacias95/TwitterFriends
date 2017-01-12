@@ -21,3 +21,6 @@ class TwitterUser(models.Model):
 
     def __str__(self):
         return self.screen_name
+
+class WholeNet(models.Model):
+    make_whole_net = models.BooleanField()

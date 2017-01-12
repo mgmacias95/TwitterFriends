@@ -30,5 +30,12 @@
 
 <p><a class="waves-effect waves-light btn", href="{% url 'netnet' %}">Download network in NET format</a></p>
 
+<form method="POST" class="whole-form">{% csrf_token %}
+        {{ whole.as_p }}
+        <input type="checkbox" class="filled-in" id="filled-in-box" />
+        <label for="filled-in-box">Whole net?</label>
+</form>
+
+
 </body>
 </html>

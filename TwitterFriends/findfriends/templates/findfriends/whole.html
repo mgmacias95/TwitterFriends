@@ -1,0 +1,9 @@
+{% extends 'findfriends/index.html' %}
+
+{% block content %}
+    <form method="POST" class="whole-form">{% csrf_token %}
+        {{ whole.as_p }}
+        <input type="checkbox" class="filled-in" id="filled-in-box" />
+        <label for="filled-in-box">Whole net?</label>
+    </form>
+{% endblock %}

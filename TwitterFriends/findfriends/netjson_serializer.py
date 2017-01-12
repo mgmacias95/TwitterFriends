@@ -9,28 +9,35 @@ django.setup()
 from findfriends.models import TwitterUser
 
 # function that generates a json to be represented on d3
-def generate_net_json():
+def generate_net_json(whole_net):
     net = {"nodes":[], "links":[]}
-    # we first add the authenticated user
-    u = TwitterUser.objects.first()
-    net["nodes"].append({"id": u.screen_name, "group":1})
-    for friend in u.friends.all():
-        net["links"].append({"source": u.screen_name, 
-            "target":friend.screen_name, "value":1})
+    if not whole_net:
+        # we first add the authenticated user
+        u = TwitterUser.objects.first()
+        net["nodes"].append({"id": u.screen_name, "group":1})
+        for friend in u.friends.all():
+            net["links"].append({"source": u.screen_name, 
+                "target":friend.screen_name, "value":1})
 
-    # then, do the same with its friends
-    for user in u.friends.all():
-        net["nodes"].append({"id": user.screen_name, "group":1})
-        # we get the friends in common
-        common_f = user.friends.filter(friends__in=u.friends.all()).distinct()
-        for friend in common_f:
-            net["links"].append({"source": user.screen_name,
-                "target": friend.screen_name, "value":1})
+        # then, do the same with its friends
+        for user in u.friends.all():
+            net["nodes"].append({"id": user.screen_name, "group":1})
+            # we get the friends in common
+            common_f = user.friends.filter(friends__in=u.friends.all()).distinct()
+            for friend in common_f:
+                net["links"].append({"source": user.screen_name,
+                    "target": friend.screen_name, "value":1})
+    else:
+        for user in TwitterUser.objects.all():
+            net["nodes"].append({"id": user.screen_name, "group":1})
+            for friend in user.friends.all():
+                net["links"].append({"source": u.screen_name, 
+                    "target":friend.screen_name, "value":1})
 
     return net
 
 # function that generates a gdf file to work on gephi
-def generate_net_gdf(whole_net = False):
+def generate_net_gdf(whole_net):
     net = []
     # start with nodes
     net.append("nodedef>name VARCHAR,label VARCHAR,verified BOOLEAN,location VARCHAR")
@@ -71,7 +78,7 @@ def generate_net_gdf(whole_net = False):
     return '\n'.join(net)
 
 # function that generates a gdf file to work on gephi
-def generate_net_gdf(whole_net = False):
+def generate_net_gdf(whole_net):
     net = []
     keys = {}
     counter = 1
