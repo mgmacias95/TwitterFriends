@@ -84,25 +84,26 @@ def generate_net_gml(whole_net):
     net.append("graph\n[\n")
     if not whole_net:
         u = TwitterUser.objects.first()
-        net.append('\tnode\n\t[\n\t\tid {}\n\t\tlabel \"{}\"\n\t]\n'.format(
-            u.user_id, u.screen_name))
+        # net.append('\tnode\n\t[\n\t\tid {}\n\t\tlabel \"{}\"\n\t]\n'.format(
+        #     u.user_id, u.screen_name))
 
         for user in u.friends.all():
             net.append('\tnode\n\t[\n\t\tid {}\n\t\tlabel \"{}\"\n\t]\n'.format(
                 user.user_id, user.screen_name))
 
         # then add edges
-        for friend in u.friends.all():
-            net.append('\tedge\n\t[\n\t\tsource {}\n\t\ttarget {}\n\t]\n'.format(
-                u.user_id, friend.user_id))
+        # for friend in u.friends.all():
+        #     net.append('\tedge\n\t[\n\t\tsource {}\n\t\ttarget {}\n\t]\n'.format(
+        #         u.user_id, friend.user_id))
     
     
         for user in u.friends.all():
             # we get the friends in common
             common_f = user.friends.filter(friends__in=u.friends.all()).distinct()
             for friend in common_f:
-                net.append('\tedge\n\t[\n\t\tsource {}\n\t\ttarget {}\n\t]\n'.format(
-                    user.user_id, friend.user_id))
+                if friend.screen_name != u.screen_name:
+                    net.append('\tedge\n\t[\n\t\tsource {}\n\t\ttarget {}\n\t]\n'.format(
+                        user.user_id, friend.user_id))
 
     else:
         for user in TwitterUser.objects.all():
