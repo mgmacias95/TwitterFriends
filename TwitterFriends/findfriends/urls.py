@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^netjson/$', views.netjson, name='netjson'),
     url(r'^netgdf/$', views.netgdf, name='netgdf'),
     url(r'^netnet/$', views.netgdf, name='netnet'),
+    url(r'^netgml/$', views.netgml, name='netgml'),
 ]

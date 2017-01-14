@@ -16,12 +16,17 @@ def netgdf(request):
 def netjson(request):
     global whole_net
     net = generate_net_json(whole_net)
-    return JsonResponse(net, content_type='text/plain')
+    return JsonResponse(net)
 
 def netnet(request):
     global whole_net
     net = generate_net_net(whole_net)
-    return JsonResponse(net, content_type='text/plain')
+    return HttpResponse(net, content_type='text/plain')
+
+def netgml(request):
+    global whole_net
+    net = generate_net_gml(whole_net)
+    return HttpResponse(net, content_type='text/plain')
 
 def get_whole_net(request):
     if request.method == 'POST':
