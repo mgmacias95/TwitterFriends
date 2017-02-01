@@ -1,6 +1,5 @@
 Django==1.10.5
 oauthlib==2.0.1
-pkg-resources==0.0.0
 requests==2.12.4
 requests-oauthlib==0.7.0
 six==1.10.0
