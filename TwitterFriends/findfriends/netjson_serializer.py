@@ -123,7 +123,7 @@ def generate_net_gml(whole_net):
     return '\n'.join(net)
 
 # function that generates a gdf file to work on gephi
-def generate_net_gdf(whole_net):
+def generate_net_net(whole_net):
     net = []
     keys = {}
     counter = 1
