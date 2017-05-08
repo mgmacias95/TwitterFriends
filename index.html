@@ -29,6 +29,145 @@
 					<h3>Más que números</h3>
 					<p>Marta Gómez y Braulio Vargas</p>
 				</section>
+				<section>
+					<section>
+						<h3>Twitter Friends</h3>
+						<ul class="fragments">
+							<li class="fragment">Aplicación Django que genera una red con nuestros contactos en Twitter.</li>
+							<li class="fragment">Dicha red se construye guardando los "siguiendo" (amigos) de un usuario y los de sus amigos.</li>
+						</ul>
+					</section>
+					<section>
+						<img src="Code/graph.png">
+					</section>
+				</section>
+				<section>
+					<section>
+						<h3>¿Cómo funciona?</h3>
+						<ol class="fragments">
+							<li class="fragment">Usa <b>Tweepy</b> para descargar datos de Twitter.</li>
+							<li class="fragment">Empezando por el usuario que lanza la aplicación, descarga sus amigos y todos los amigos de sus amigos.</li>
+							<li class="fragment">Estos datos se guardan en una base de datos <b>sqlite3</b></li>
+							<li class="fragment">Desde el navegador, el usuario selecciona en qué formato quiere la red y la aplicación se la devuelve.</li>
+						</ol>
+					</section>
+					<section>
+						<h3>Conectando con Tweepy</h3>
+						<pre><code class="hljs" data-trim contenteditable>
+import tweepy
+from os import environ
+from findfriends.models import TwitterUser
+environ.setdefault("DJANGO_SETTINGS_MODULE", 
+				  "TwitterFriends.settings")
+
+# Las claves de acceso a twitter están definidas como 
+# variables de entorno
+auth = tweepy.OAuthHandler(environ["TWITTER_CONSUMER_KEY"], 
+                           environ["TWITTER_CONSUMER_SECRET"])
+auth.set_access_token(environ["TWITTER_ACCESS_TOKEN"], 
+                      environ["TWITTER_ACCESS_TOKEN_SECRET"])
+api = tweepy.API(auth_handler=auth, 
+	wait_on_rate_limit_notify=True, 
+    wait_on_rate_limit=True)
+
+					</code></pre>
+					</section>
+					<section>
+						<h3>Modelo de Usuario de Twitter</h3>
+						<pre><code class="hljs" data-trim contenteditable>
+class TwitterUser(models.Model):
+    # id numérico del usuario en twitter.
+    user_id = models.IntegerField(unique=True)
+    # nombre de usuario en twitter (@...).
+    screen_name = models.CharField(unique=True, max_length=50)
+    # flag para saber si es una cuenta verificada
+    is_verified = models.BooleanField()
+    # localización del usuario
+    location = models.CharField(max_length=50)
+    # lista de amigos del usuario.
+    friends = models.ManyToManyField('self', symmetrical=False, 
+    					blank=True)
+
+    def __str__(self):
+		return self.screen_name
+
+					</code></pre>
+					</section>
+										<section>
+						<h3>Guardando usuarios</h3>
+						<pre><code class="hljs" data-trim contenteditable>
+def save_user(user):
+    if not TwitterUser.objects.filter(user_id=user.id).exists():
+        print("Saving: ",user.screen_name)
+        u = TwitterUser()
+        u.user_id = user.id
+        u.screen_name = user.screen_name
+        u.is_verified = user.verified
+        u.location = user.location
+        u.save()
+    else:
+        print(user.screen_name, " is already on the data base")
+
+
+def get_and_save_friends(user_id):
+    global n_calls
+    for friend in tweepy.Cursor(api.friends, 
+    			user_id=user_id, count=200).items():
+		save_user(friend)
+
+# guardamos el objeto usuario del usuario 
+# identificado en la base de datos
+me = api.me()
+save_user(me)
+# guardamos sus amigos y los amigos de sus 
+# amigos en la base de datos
+get_and_save_friends(user_id=me.id)
+amigos = api.friends_ids(user_id=me.id)
+for amigo in amigos:
+	get_and_save_friends(user_id=amigo)
+					</code></pre>
+					</section>
+					<section>
+						<h3>Creando las relaciones de amistad</h3>
+						<pre><code class="hljs" data-trim contenteditable>
+# function to save frienship on database
+def create_frienship(api, userid):
+    user = TwitterUser.objects.get(user_id=userid)
+    if len(user.friends.all()) == 0:
+        friends = api.friends_ids(user_id=userid)
+        print("Saving ", user.screen_name, "'s friends")
+        for friend in friends:
+            if TwitterUser.objects.filter(user_id=friend)
+            		.exists():
+                u = TwitterUser.objects.get(user_id=friend)
+                print(u.screen_name, " is friend of ", 
+                	user.screen_name)
+                user.friends.add(u)
+    else:
+		print(user.screen_name, "'s friends are 
+				already saved")
+
+me = api.me()
+
+# guardamos los amigos del usuario identificado
+amigos = api.friends_ids(user_id=me.id)
+create_frienship(api=api, userid=me.id)
+# guardamos los amigos de los amigos del usuario identificado
+for amigo in amigos:
+    if TwitterUser.objects.filter(user_id=amigo).exists():
+		create_frienship(api=api, userid=amigo)
+					</code></pre>
+					</section>
+				</section>
+				<section>
+					<h3>Una forma diferente de extraer datos...</h3>
+					<p class="fragment">Este tipo de datos en forma de grafo nos permite extraer información distinta a la que podríamos obtener estudiando únicamente los RT, MG o número de seguidores del usuario.</p>
+					<ul class="fragments">
+						<li class="fragment">Detección de comunidades.</li>
+						<li class="fragment">Detección de personas más influyentes o populares.</li>
+						<li class="fragment">Estudio de la influencia/alcance de un usuario concreto en una red.</li>
+					</ul>
+				</section>
 			</div>
 		</div>
 
