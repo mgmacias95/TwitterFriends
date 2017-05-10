@@ -5,6 +5,25 @@
  *
  * Copyright (C) 2017 Hakim El Hattab, http://hakim.se
  */
+
+/* Circular images
+  http://sixrevisions.com/css/circular-images-css/
+*/
+.circular {
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  background-repeat: no-repeat; 
+  background-origin:content-box;
+  background-position: center;
+  background-attachment: fixed;
+  background-size: 100% 100%; 
+  }
+
+
+
 /*********************************************
  * RESET STYLES
  *********************************************/
